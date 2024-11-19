@@ -13,14 +13,19 @@ pipeline {
 
             }
         }
-        // stage('Nexus Push'){
-        //     steps{
-        //         withCredentials([string(credentialsId: 'nexus-pwd', variable: 'nexusPwd')]) {
-        //             sh "docker login -u admin -p ${nexusPwd} ${NEXUS_URL}"
-        //             sh "docker push ${IMAGE_URL_WITH_TAG}"
-        //         }
-        //     }
-        // }
+        stage('Nexus Push'){
+            steps{
+                // withCredentials([string(credentialsId: 'nexus-pwd', variable: 'nexusPwd')]) {
+                //     sh "docker login -u cfusionjo -p ${nexusPwd} ${NEXUS_URL}"
+                //     sh "docker push ${IMAGE_URL_WITH_TAG}"
+                // }
+                withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerHubPWD')]) {
+                    sh "docker login -u cfusionjo -p ${dockerHubPWD}"
+                    sh "docker push cfusionjo/nodeapp:${DOCKER_TAG}"
+                }
+
+            }
+        }
         // stage('Docker Deploy Dev'){
         //     steps{
         //         sshagent(['tomcat-dev']) {
