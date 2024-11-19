@@ -26,6 +26,28 @@ pipeline {
 
             }
         }
+
+        stage('Deploy to Kubernetes'){
+            steps{
+               sh "chmod +x changeTag.sh"
+               sh "./changeTag.sh ${DOCKER_TAG}"
+               sshagent(['kopsMachineKey']) {
+                   sh "scp -0 StrictHostKeyChecking=no services.yml node-app-pod.yml ubuntu@18.208.229.22:/home/ubuntu"
+                    script{
+                        try{
+                            sh "ssh ubuntu@18.208.229.22 kubectl apply -f ." 
+                        }
+                        catch(error) 
+                            {
+                            sh "ssh ubuntu@18.208.229.22 kubectl create -f ."
+                            }
+                    }
+                }
+            }
+        }
+
+
+
         // stage('Docker Deploy Dev'){
         //     steps{
         //         sshagent(['tomcat-dev']) {
