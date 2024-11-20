@@ -5,6 +5,7 @@ metadata:
   labels:
     app: nodeapp
 spec:
+  replicas: 4  # Total number of pods (2 pods per node)
   containers:
     - name: nodeapp
       image: cfusionjo/nodeapp:tagVersion
